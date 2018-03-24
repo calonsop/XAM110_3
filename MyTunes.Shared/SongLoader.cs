@@ -33,12 +33,18 @@ namespace MyTunes
 		const string ResourceName = "MyTunes.Shared.songs.json";
 		public static async Task<IEnumerable<Song>> ImprovedLoad()
 		{
-		    var assembly = typeof(SongLoader).GetTypeInfo().Assembly;
+            IEnumerable<Song> result = null;
+            var assembly = typeof(SongLoader).GetTypeInfo().Assembly;
 		    using (var stream = assembly.GetManifestResourceStream(ResourceName))
 		    using (var reader = new StreamReader(stream))
 		    {
-		        return JsonConvert.DeserializeObject<List<Song>>(await reader.ReadToEndAsync());
+                result = JsonConvert.DeserializeObject<List<Song>>(await reader.ReadToEndAsync());
 		    }
+            foreach(var aux in result)
+            {
+                aux.Name = aux.Name.RuinSongName();
+            }
+            return result;
 		}
 	}
 }
